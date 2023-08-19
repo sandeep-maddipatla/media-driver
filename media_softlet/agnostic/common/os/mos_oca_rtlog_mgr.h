@@ -82,7 +82,7 @@ protected:
 
     static bool                          m_enableOcaRTLog;
     static MosMutex                      s_ocaMutex;
-
+    static bool                          s_isOcaRtlogMgrDestoryed;
 MEDIA_CLASS_DEFINE_END(MosOcaRTLogMgr)
 };
 

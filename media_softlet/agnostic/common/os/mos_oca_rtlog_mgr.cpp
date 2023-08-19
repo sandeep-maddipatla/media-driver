@@ -30,6 +30,7 @@
 
 bool MosOcaRTLogMgr::m_enableOcaRTLog = true;
 MosMutex MosOcaRTLogMgr::s_ocaMutex;
+bool MosOcaRTLogMgr::s_isOcaRtlogMgrDestoryed = false;
 
 /****************************************************************************************************/
 /*                                      MosOcaRTLogMgr                                              */
@@ -139,6 +140,8 @@ MosOcaRTLogMgr::MosOcaRTLogMgr()
     m_heapAddr = OcaRtLogSectionMgr::GetMemAddress();
 
     m_isMgrInitialized = true;
+
+    s_isOcaRtlogMgrDestoryed = false;
 }
 
 MosOcaRTLogMgr::MosOcaRTLogMgr(MosOcaRTLogMgr &)
@@ -149,6 +152,7 @@ MosOcaRTLogMgr::~MosOcaRTLogMgr()
 {
     m_globleIndex = -1;
     m_isMgrInitialized = false;
+    s_isOcaRtlogMgrDestoryed = true;
 }
 
 
@@ -188,6 +192,11 @@ void MosOcaRTLogMgr::UnRegisterContext(OsContextNext *osDriverContext)
         return;
     }
     MosOcaRTLogMgr &ocaRTLogMgr = GetInstance();
+    if (s_isOcaRtlogMgrDestoryed)
+    {
+        MOS_OS_NORMALMESSAGE("MosOcaRTLogMgr have be destroyed!");
+        return;
+    }
     MOS_STATUS      status      = ocaRTLogMgr.UnRegisterCtx(osDriverContext);
     if (status != MOS_STATUS_SUCCESS)
     {
